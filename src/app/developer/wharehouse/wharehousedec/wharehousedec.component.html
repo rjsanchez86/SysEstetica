@@ -1,0 +1,112 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Movimientos de Almacenes" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-sm-12">
+          <label>Sucursal:</label>
+          <select name="sucursal" class="form-control form-control-default"
+            (change)="obtenerAlmacen($event.target.value)">
+            <option [value]="0">Seleccionar...</option>
+            <option [value]="sucu.idsucursal" *ngFor="let sucu of sucursal">{{sucu.sucursal}}
+            </option>
+          </select>
+        </div>
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-5">
+              <label>Almacen:</label>
+              <select name="almacen" class="form-control form-control-default"
+                (change)="obtenerProducto($event.target.value)">
+                <option [value]="0">Seleccionar...</option>
+                <option [value]="alma.idalmacen" *ngFor="let alma of almacen">{{alma.almacen}}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-1">
+              <br>
+              <h1><i class="feather icon-chevrons-right"></i></h1>
+            </div>
+            <div class="col-sm-5">
+              <label>Almacen:</label>
+              <select name="almacenm" class="form-control form-control-default" (change)="obtenerProductoM($event.target.value)">
+                <option [value]="0">Seleccionar...</option>
+                <option [value]="almm.idalmacen" *ngFor="let almm of almacenm">{{almm.almacen}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-12">
+              <ng-select placeholder="Productos" [items]="productos" bindLabel="nombre" bindValue="idproducto"
+                [(ngModel)]="ProductoId" (change)="articuloSel($event)">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+    </app-card>
+  </div>
+  <div class="col-sm-6">
+    <app-card cardTitle="Almacen Principal" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row" *ngIf="producto">
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Presentación</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let prod of producto; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ prod.codigobarras }}</td>
+                <td>{{ prod.nombre }}</td>
+                <td>{{ prod.cantidad }}</td>
+                <td>{{ prod.presentacion }}</td>
+                <td><button type="button" class="btn btn-icon btn-info" ngbTooltip="Agregar Producto Almacen Merma" (click)="enviar(prod)"><i
+                    class="feather icon-arrow-right" ></i></button>
+                  </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-sm-6">
+    <app-card cardTitle="Almacen Merma" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row" *ngIf="productom">
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Presentación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let prodm of productom; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ prodm.codigobarras }}</td>
+                <td>{{ prodm.nombre }}</td>
+                <td>{{ prodm.cantidad }}</td>
+                <td>{{ prodm.presentacion }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </app-card>
+  </div>
+</div>

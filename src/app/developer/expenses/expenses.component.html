@@ -1,0 +1,89 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Registro de Gastos" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', gastosModal)"><i
+              class="feather icon-edit-2"></i>Agregar Gasto</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Sucursal</th>
+              <th>Gasto </th>
+              <th>Fecha </th>
+              <th>Monto </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let gasto of gastos; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ gasto.sucursal }}</td>
+              <td>{{ gasto.cgastos }}</td>
+              <td>{{ gasto.fcreacion | date }}</td>
+              <td>{{ gasto.monto | currency: 'MXN' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<ng-template #gastosModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Gastos</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row m-t-30">
+      <div class="col-md-12 col-xl-4">
+        <label>Sucursal</label>
+        <select name="sucursal" class="form-control form-control-default" [(ngModel)]="gast.idsucursal">
+          <option [value]="0" selected>Seleccionar...</option>
+          <option [value]="sucu.idsucursal" *ngFor="let sucu of sucursal">{{sucu.sucursal}}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-12 col-xl-4">
+        <label>Tipo</label>
+        <select name="tgastos" class="form-control form-control-default" [(ngModel)]="gast.idtgastos">
+          <option [value]="0" selected>Seleccionar...</option>
+          <option [value]="tgas.idtgastos" *ngFor="let tgas of tgastos">{{tgas.tipo}}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-12 col-xl-5">
+        <label>Concepto Gasto</label>
+        <ng-select [items]="cgastos" bindLabel="cgastos" bindValue="idcgastos" [(ngModel)]="IdCGastos">
+        </ng-select>
+      </div>
+      <div class="col-md-12 col-xl-3">
+        <br><br>
+        <button type="button" class="btn btn-primary" (click)="cGasto()"><i class="feather icon-edit-2"></i>Agregar
+          Concepto</button>
+      </div>
+      <div class="col-md-12 col-xl-3">
+        <label>Monto</label>
+        <input type="number" min="0" max="9000" class="form-control" placeholder="0" [(ngModel)]="gast.monto">
+      </div>
+      <div class="col-md-12 col-xl-8">
+        <label>Observación</label>
+        <input type="text" class="form-control" placeholder="Observación" [(ngModel)]="gast.observaciones">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar()"><i class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

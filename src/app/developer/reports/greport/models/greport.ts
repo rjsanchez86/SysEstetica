@@ -1,0 +1,25 @@
+export class Greport {
+  constructor(
+    public folio: string,
+    public fecha: string,
+    public horaentrada: string,
+    public horasalida: string,
+    public cliente: string,
+    public servicio: string,
+    public pservicio: string,
+    public mpagos: string,
+    public precio: string,
+    public iva: string,
+    public subtotal: string,
+    public personal: string,
+    public comision: string,
+    public servicioper: string,
+    public importeper: string,
+    public subtotalper: string,
+    public producto: string,
+    public costo_producto: string,
+    public costo: string,
+    public utilidad: string,
+    public porutulidad: string,
+  ) { }
+}

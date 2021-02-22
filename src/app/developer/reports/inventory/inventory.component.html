@@ -1,0 +1,49 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Inventario" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6 m-b-30" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+            class="table table-striped row-border table-hover">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Sucursal</th>
+                <th>Almacen</th>
+                <th>codigobarras</th>
+                <th>nombre</th>
+                <th>proveedor</th>
+                <th>marca</th>
+                <th>submarca</th>
+                <th>presentacion</th>
+                <th>cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let inv of inventario; let i = index;">
+                <td>{{ i + 1}}</td>
+                <td>{{inv.sucursal}}</td>
+                <td>{{inv.almacen}}</td>
+                <td>{{inv.codigobarras}}</td>
+                <td>{{inv.nombre}}</td>
+                <td>{{inv.proveedor}}</td>
+                <td>{{inv.marca}}</td>
+                <td>{{inv.submarca}}</td>
+                <td>{{inv.presentacion}}</td>
+                <td>{{inv.cantidad}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <br>
+    </app-card>
+  </div>
+</div>

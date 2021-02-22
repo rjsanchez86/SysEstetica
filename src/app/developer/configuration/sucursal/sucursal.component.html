@@ -1,0 +1,133 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Sucursal" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6 m-b-30" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6 m-b-30" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', sucursalModal)"><i
+              class="feather icon-edit-2"></i>Agregar
+            sucursal</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Empresa</th>
+              <th>Sucursal</th>
+              <th>Dirección</th>
+              <th>Estatus</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sucursal of sucursales">
+              <td>{{sucursal.idsucursal}}</td>
+              <td>{{sucursal.empresa}}</td>
+              <td>{{sucursal.sucursal}}</td>
+              <td>{{sucursal.direccion}}, {{sucursal.nexterior}},<br> {{sucursal.colonia}},
+                {{sucursal.municipio}}, {{sucursal.estado}}, C.P. {{sucursal.cpostal}} </td>
+              <td><span _ngcontent-nqr-c153=""
+                  class="badge m-r-5 badge-primary ng-tns-c131-179">{{sucursal.estatus}}</span></td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-primary" ngbTooltip="Ver Sucursal"
+                  (click)="ver('view', sucursal, sucursalModal)"><i class="feather icon-eye"></i></button>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Actualizar Sucursal"
+                  (click)="ver('update', sucursal, sucursalModal)"><i class="feather icon-edit-1"></i></button>
+                <button type="button" class="btn btn-icon btn-outline-danger" ngbTooltip="Cambiar Estatus"
+                  (click)="estatus(sucursal)"><i class="feather icon-check"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+<ng-template #sucursalModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Sucursal</h4>
+  </div>
+  <div class="modal-body" *ngIf="status == 'view'">
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>Nombre de la Empresa</h5> {{suc.empresa}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Nombre de la Sucursal</h5> {{suc.sucursal}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>Dirección de la Sucursal</h5> {{suc.direccion}}, {{suc.nexterior}}, {{suc.ninterior}},
+        {{suc.colonia}}, {{suc.estado}}, C.P. {{suc.cpostal}}
+      </div>
+    </div>
+  </div>
+  <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+    <form id="form-sucursal" #validationEmpresa="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <label>Nombre de la Empresa</label>
+            <select name="miselect" [(ngModel)]="suc.idempresa" class="form-control form-control-default">
+              <option [value]="0" *ngIf="suc.idempresa == '' ? 'selected' : ''">Seleccionar...</option>
+              <option [value]="empresa.idempresa" *ngFor="let empresa of empresas">{{empresa.empresa}}
+              </option>
+            </select>
+            <label>Nombre de la Sucursal</label>
+            <input type="text" class="form-control" placeholder="Sucursal" name="sucursal" [(ngModel)]="suc.sucursal">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <label>Dirección de la Sucursal</label>
+            <input type="text" class="form-control" placeholder="Dirección de la Sucursal" name="direccion"
+              [(ngModel)]="suc.direccion">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>No. Exterior de la Sucursal</label>
+            <input type="text" class="form-control" placeholder="No. Exterior de la Sucursal" name="nexterior"
+              [(ngModel)]="suc.nexterior">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>No. Interior de la Sucursal</label>
+            <input type="text" class="form-control" placeholder="No. Interior de la Sucursal" name="ninterior"
+              [(ngModel)]="suc.ninterior">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Colonia o Municipio</label>
+            <input type="text" class="form-control" placeholder="Colonia o Municipio" name="colonia"
+              [(ngModel)]="suc.colonia">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Estado</label>
+            <input type="text" class="form-control" placeholder="Estado" name="estado" [(ngModel)]="suc.estado">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Codigo Postal</label>
+            <input type="text" class="form-control" placeholder="Codigo Postal" name="cpostal"
+              [(ngModel)]="suc.cpostal">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Letra Inicial de la Sucursal (Ticket)</label>
+            <input type="text" class="form-control" placeholder="Letra Folio" name="letrafolio"
+              [(ngModel)]="suc.letrafolio">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar()" *ngIf="status == 'update' || status == 'new'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

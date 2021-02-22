@@ -1,0 +1,108 @@
+<ul class="navbar-nav">
+    <li>
+    <div class="dropdown" ngbDropdown placement="auto">
+      <a ngbDropdownToggle href="javascript:" data-toggle="dropdown"><i class="icon fas fa-store"></i></a>
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right notification">
+        <div class="noti-head">
+          <h6 class="d-inline-block m-b-0">Ventas</h6>
+        </div>
+        <ul class="noti-body">
+          <li class="notification">
+            <div class="media">
+              <i class="icon fas fa-shopping-basket"></i>
+              <div class="media-body">
+                <a [routerLink]="['/sales']" class="displayChatbox">Nuevo Registro Ventas</a>
+              </div>
+            </div>
+          </li>
+          <li class="notification">
+            <div class="media">
+              <i class="icon feather icon-align-justify"></i>
+              <div class="media-body">
+                <a [routerLink]="['/listsales']" class="displayChatbox">Lista de Ventas</a>
+              </div>
+            </div>
+          </li>
+          <li class="notification">
+            <div class="media">
+              <i class="icon fas fa-cart-arrow-down"></i>
+              <div class="media-body">
+                <a [routerLink]="['/rproducts']" class="displayChatbox">Devolución Producto Venta</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="dropdown" ngbDropdown placement="auto">
+      <a ngbDropdownToggle href="javascript:" data-toggle="dropdown" (click)="cargarAgenda()"><i class="icon feather icon-calendar"></i></a>
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right notification">
+        <div class="noti-head">
+          <h6 class="d-inline-block m-b-0">Calendario</h6>
+        </div>
+        <ul class="noti-body">
+          <li class="notification">
+            <div class="media">
+              <i class="icon feather icon-calendar"></i>
+              <div class="media-body">
+                <a [routerLink]="['/quotes']" class="displayChatbox">Nuevo Registro Agenda</a>
+              </div>
+            </div>
+          </li>
+          <li class="n-title">
+            <p class="m-b-0">Citas</p>
+          </li>
+          <li class="notification"  *ngFor="let age of agenda; let i = index">
+            <div class="media">
+              <div class="media-body">
+                <p><strong>{{ age.nombre }}</strong><span class="n-time text-muted"><i class="icon feather icon-clock m-r-10"></i>{{age.hcita}}</span></p>
+                <p>{{age.estatus}}</p>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="dropdown" ngbDropdown placement="auto">
+      <a ngbDropdownToggle href="javascript:" data-toggle="dropdown"><i class="icon feather icon-user"></i></a>
+      <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right notification">
+        <div class="noti-head">
+          <h6 class="d-inline-block m-b-0">Clientes</h6>
+        </div>
+        <ul class="noti-body">
+          <li class="notification">
+            <div class="media">
+              <i class="icon feather icon-user-check"></i>
+              <div class="media-body">
+                <a [routerLink]="['/client']" class="displayChatbox">Nuevo Registro Cliente</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="dropdown drp-user" ngbDropdown placement='auto'>
+      <a href="javascript:" ngbDropdownToggle data-toggle="dropdown">
+        <i class="icon feather icon-settings"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right profile-notification" ngbDropdownMenu>
+        <div class="pro-head">
+          <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image">
+          <span>{{usuario.firstName | titlecase}} {{usuario.lastName | titlecase}}</span>
+          <a [routerLink]="" (click)="cerrar()" class="dud-logout" title="Cerrar Sesion">
+            <i class="feather icon-log-out"></i>
+          </a>
+        </div>
+        <ul class="pro-body">
+          <li><a [routerLink]="" (click)="cerrar()" class="dropdown-item"><i class="feather icon-lock"></i> Cerrar Sesion</a></li>
+        </ul>
+      </div>
+    </div>
+  </li>
+</ul>

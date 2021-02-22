@@ -1,0 +1,134 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card cardTitle="Lista de Empresa" cardClass="Application-list" blockClass="pb-0" [options]="false">
+            <div class="row">
+                <div class="col-md-6 m-b-30" style="text-align:left;">
+                    <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+                            class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+                </div>
+                <div class="col-md-6 m-b-30" style="text-align:right;">
+                    <button type="button" class="btn btn-primary" (click)="ver('new', '', empresaModal)"><i
+                            class="feather icon-edit-2"></i>Agregar
+                        Empresa</button>
+                </div>
+
+            </div>
+            <hr>
+            <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                    class="table table-striped row-border table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Nombre</th>
+                            <th>RFC</th>
+                            <th>Dirección</th>
+                            <th>Estatus</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let empresa of empresas">
+                            <td>{{empresa.idempresa}}</td>
+                            <td>{{empresa.empresa}}</td>
+                            <td>{{empresa.rfc}}</td>
+                            <td>{{empresa.direccion}}, {{empresa.nexterior}},<br> {{empresa.colonia}},
+                                {{empresa.municipio}}, {{empresa.estado}}, C.P. {{empresa.cpostal}} </td>
+                            <td><span _ngcontent-nqr-c153=""
+                                    class="badge m-r-5 badge-primary ng-tns-c131-179">{{empresa.estatus}}</span></td>
+                            <td>
+                                <button type="button" class="btn btn-icon btn-outline-primary" ngbTooltip="Ver Empresa"
+                                    (click)="ver('view', empresa, empresaModal)"><i
+                                        class="feather icon-eye"></i></button>
+                                <button type="button" class="btn btn-icon btn-outline-success"
+                                    ngbTooltip="Modificar Empresa" (click)="ver('update', empresa, empresaModal)"><i
+                                        class="feather icon-edit-1"></i></button>
+                                <!--<button type="button" class="btn btn-icon btn-outline-danger"
+                                    ngbTooltip="Cambiar Estatus"><i class="feather icon-check"></i></button>-->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </app-card>
+    </div>
+</div>
+
+
+<ng-template #empresaModal>
+    <div class="modal-header">
+        <h4 class="modal-title">Datos del Empresa</h4>
+    </div>
+    <div class="modal-body" *ngIf="status == 'view'">
+        <div class="row">
+            <div class="col-md-6 m-b-30">
+                <h5>Nombre de la Empresa</h5> {{emp.empresa}}
+            </div>
+            <div class="col-md-6 m-b-30">
+                <h5>RFC de la Empresa</h5> {{emp.rfc}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 m-b-30">
+                <h5>Dirección de la Empresa</h5> {{emp.direccion}} {{emp.nexterior}}, {{emp.ninterior}},<br>
+                {{emp.colonia}}, {{emp.estado}}, C.P. {{emp.cpostal}}
+            </div>
+        </div>
+    </div>
+    <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+        <form id="form-empresa" #validationEmpresa="ngForm">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6 m-b-30">
+                        <label>Nombre de la Empresa</label>
+                        <input #empresa type="text" class="form-control" placeholder="Nombre Empresa" name="empresa"
+                            [(ngModel)]="emp.empresa" (input)="empresa.value=$event.target.value.toUpperCase()">
+                    </div>
+                    <div class="col-md-6 m-b-30">
+                        <label>RFC de la Empresa</label>
+                        <input #rfc type="text" class="form-control" placeholder="RFC Empresa" name="rfc"
+                            [(ngModel)]="emp.rfc"  (input)="rfc.value=$event.target.value.toUpperCase()">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 m-b-30">
+                        <label>Dirección de la Empresa</label>
+                        <input #direccion type="text" class="form-control" placeholder="Dirección de la Empresa" name="direccion"
+                            [(ngModel)]="emp.direccion" (input)="direccion.value=$event.target.value.toUpperCase()">
+                    </div>
+                    <div class="col-md-3 m-b-30">
+                        <label>No. Exterior de la Empresa</label>
+                        <input #nexterior type="text" class="form-control" placeholder="No. Exterior de la Empresa"
+                            name="nexterior" [(ngModel)]="emp.nexterior" (input)="nexterior.value=$event.target.value.toUpperCase()">
+                    </div>
+                    <div class="col-md-3 m-b-30">
+                        <label>No. Interior de la Empresa</label>
+                        <input #ninterior type="text" class="form-control" placeholder="No. Interior de la Empresa"
+                            name="ninterior" [(ngModel)]="emp.ninterior">
+                    </div>
+                    <div class="col-md-3 m-b-30">
+                        <label>Colonia o Municipio</label>
+                        <input #colonia type="text" class="form-control" placeholder="Colonia o Municipio" name="colonia"
+                            [(ngModel)]="emp.colonia" (input)="colonia.value=$event.target.value.toUpperCase()">
+                    </div>
+                    <div class="col-md-3 m-b-30">
+                        <label>Estado</label>
+                        <input #estado type="text" class="form-control" placeholder="Estado" name="estado"
+                            [(ngModel)]="emp.estado" (input)="estado.value=$event.target.value.toUpperCase()">
+                    </div>
+                    <div class="col-md-3 m-b-30">
+                        <label>Codigo Postal</label>
+                        <input #cpostal type="text" class="form-control" placeholder="Codigo Postal" name="cpostal"
+                            [(ngModel)]="emp.cpostal" >
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-warning" (click)="cerrar()"><i
+                class="feather icon-x-square"></i>Cerrar Ventana</button>
+        <button type="button" class="btn btn-primary" (click)="guardar()"
+            *ngIf="status == 'update' || status == 'new'"><i class="feather icon-save"></i>Guardar</button>
+    </div>
+</ng-template>

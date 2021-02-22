@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card cardTitle="Lista de Metodos de Pago" cardClass="Application-list" blockClass="pb-0" [options]="false">
+            <div class="row">
+                <div class="col-md-6 m-b-30" style="text-align:left;">
+                    <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+                            class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+                </div>
+                <div class="col-md-6 m-b-30" style="text-align:right;">
+                    <button type="button" class="btn btn-primary" (click)="ver('new', '', metodoModal)"><i
+                            class="feather icon-edit-2"></i>Nuevo Metodo de Pago</button>
+                </div>
+            </div>
+            <hr>
+            <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                    class="table table-striped row-border table-hover">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Metodo de Pago</th>
+                            <th>Estatus</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let metodo of metodos">
+                            <td>{{metodo.idmpagos}}</td>
+                            <td>{{metodo.mpagos}}</td>
+                            <td><span _ngcontent-nqr-c153=""
+                                    class="badge m-r-5 badge-primary ng-tns-c131-179">{{metodo.estatus}}</span></td>
+                            <td>
+                                <button type="button" class="btn btn-icon btn-outline-success"
+                                    ngbTooltip="Actualizar Dato" (click)="ver('update', metodo, metodoModal)"><i
+                                        class="feather icon-edit-1"></i></button>
+                                <button type="button" class="btn btn-icon btn-outline-danger"
+                                    ngbTooltip="Cambiar Estatus"><i class="feather icon-check"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </app-card>
+    </div>
+</div>
+<ng-template #metodoModal>
+    <div class="modal-header">
+        <h4 class="modal-title">Datos del Metodo de Pago</h4>
+    </div>
+    <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+        <form id="form-sucursal" #validationEmpresa="ngForm">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6 m-b-30">
+                        <label>Metodo de Pago</label>
+                        <input #mpagos type="text" class="form-control" placeholder="Metodo de Pago" name="mpagos"
+                            [(ngModel)]="met.mpagos" (input)="mpagos.value=$event.target.value.toUpperCase()">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-warning" (click)="cerrar()"><i
+                class="feather icon-x-square"></i>Cerrar Ventana</button>
+        <button type="button" class="btn btn-primary" (click)="guardar()"
+            *ngIf="status == 'update' || status == 'new'"><i class="feather icon-save"></i>Guardar</button>
+    </div>
+</ng-template>

@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-sm-12">
+      <app-card cardTitle="Lista de Clasificacion de Servicios" cardClass="Application-list" blockClass="pb-0" [options]="false">
+          <div class="row">
+              <div class="col-md-6 m-b-30" style="text-align:left;">
+                  <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+                          class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+              </div>
+              <div class="col-md-6 m-b-30" style="text-align:right;">
+                  <button type="button" class="btn btn-primary" (click)="ver('new', '', clasficacionModal)"><i
+                          class="feather icon-edit-2"></i>Nueva Clasificación</button>
+              </div>
+          </div>
+          <hr>
+          <div class="table-responsive">
+              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                  class="table table-striped row-border table-hover">
+                  <thead>
+                      <tr>
+                          <th>No.</th>
+                          <th>Clasificación</th>
+                          <th>Acciones</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let clas of clasificacion">
+                          <td>{{clas.idclasificacion}}</td>
+                          <td>{{clas.clasificacion}}</td>
+                          <td>
+                              <button type="button" class="btn btn-icon btn-outline-success"
+                                  ngbTooltip="Actualizar Dato" (click)="ver('update', clas, clasficacionModal)"><i
+                                      class="feather icon-edit-1"></i></button>
+                              <button type="button" class="btn btn-icon btn-outline-danger"
+                                  ngbTooltip="Cambiar Estatus"><i class="feather icon-check"></i></button>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </app-card>
+  </div>
+</div>
+<ng-template #clasficacionModal>
+  <div class="modal-header">
+      <h4 class="modal-title">Datos de la Clasificación</h4>
+  </div>
+  <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+      <form id="form-sucursal" #validationClasificacion="ngForm">
+          <div class="form-group">
+              <div class="row">
+                  <div class="col-md-6 m-b-30">
+                      <label>Clasificacion de Servicio</label>
+                      <input #clasificacion type="text" class="form-control" placeholder="Clasificación" name="clasificacion"
+                          [(ngModel)]="cla.clasificacion" (input)="clasificacion.value=$event.target.value.toUpperCase()">
+                  </div>
+              </div>
+          </div>
+      </form>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-warning" (click)="cerrar()"><i
+              class="feather icon-x-square"></i>Cerrar Ventana</button>
+      <button type="button" class="btn btn-primary" (click)="guardar()"
+          *ngIf="status == 'update' || status == 'new'"><i class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

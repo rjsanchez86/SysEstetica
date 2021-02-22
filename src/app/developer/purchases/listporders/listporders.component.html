@@ -1,0 +1,153 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Ordenes de Compra" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+          <button type="button" class="btn btn-primary" [routerLink]="'/porders'"><i
+              class="feather icon-edit-2"></i>Nueva Orden de Compras</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No. </th>
+              <th>Sucursal </th>
+              <th>Folio Orden </th>
+              <th>Fecha </th>
+              <th>Solicita </th>
+              <th>Autoriza </th>
+              <th>Total Piezas </th>
+              <th>Total Monto </th>
+              <th>Estatus </th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orden of lordenes; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ orden.sucursal}}</td>
+              <td>{{ orden.orden }}</td>
+              <td>{{ orden.fecha }}</td>
+              <td>{{ orden.solicita }}</td>
+              <td>{{ orden.autoriza }}</td>
+              <td>{{ orden.piezas }}</td>
+              <td>{{ orden.monto }}</td>
+              <td>{{ orden.estatus }}</td>
+              <td>
+                <button type="button" class="btn btn-icon btn-info" ngbTooltip="Detalle de la Orden {{orden.orden}}"
+                  (click)="ver('ordenDetalle', orden, ordenModal)"><i class="feather icon-file-text"></i></button>
+                <button type="button" class="btn btn-icon btn-danger"
+                  ngbTooltip="Cancelar de la Orden {{orden.orden}}"><i class="feather icon-x-square"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<ng-template #ordenModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Orden de Compras Folio {{ordenes.orden}}</h4>
+    <button type="button" class="btn btn-primary" *ngIf="usuario.puesto == 'ADMINISTRADOR' && ordenes.estatus == 'Activo'"  (click)="autorizar(ordenes, ordenModal)"><i class="feather icon-check-circle"></i>Autorizar Orden</button>
+  </div>
+  <div class="modal-body">
+    <div id="printdiv">
+      <div class="row">
+        <div class="col-md-12 " style="align-items: center;">
+          <h4 align="center">ORDEN DE COMPRA</h4>
+          <span class="b-title">
+            <h2 align="center">LAURA CARDONA </h2>
+          </span>
+          <h6 align="center">GRUPO ESPECIALIZADO EN DISEÑO DE IMAGEN SA DE CV</h6>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="row">
+            <div class="col-sm-1">
+              <strong>Fecha:</strong>
+            </div>
+            <div class="col-sm-3" style="border-bottom: 1px solid">
+              {{ today | date:'fullDate' | titlecase}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12" style="text-align: center;">
+              <br><br>
+              <strong>SOLICITUD DE PEDIDO {{ ordenes.fecha | date:'fullDate' | uppercase }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>Codigo</th>
+                  <th>Marca</th>
+                  <th >Descripción</th>
+                  <th>Submarca</th>
+                  <th>Costo con IVA</th>
+                  <th>Cantidad</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let dorden of dordenes; let i = index">
+                  <td>{{ dorden.codigobarras }}</td>
+                  <td>{{ dorden.marca }}</td>
+                  <td style="width: 10px; text-align: justify;">{{ dorden.nombre }}</td>
+                  <td>{{ dorden.submarca }}</td>
+                  <td>{{ dorden.costo }}</td>
+                  <td>{{ dorden.cantidad }}</td>
+                  <td>{{ dorden.monto }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="5"></td>
+                  <td>{{ ordenes.piezas }}</td>
+                  <td>{{ ordenes.monto }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6" style="text-align: center;">
+          <strong>Solicita</strong>
+        </div>
+        <div class="col-sm-6" style="text-align: center;">
+          <strong>Autoriza</strong>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="col-sm-6" style="text-align: center;">
+          <strong>{{ ordenes.solicita }}</strong>
+        </div>
+        <div class="col-sm-6" style="text-align: center;">
+          <strong>{{ ordenes.autoriza }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-info" [useExistingCss]="true" printSectionId="printdiv" ngxPrint><i
+        class="feather icon-printer"></i>Imprimir Orden</button>
+  </div>
+</ng-template>

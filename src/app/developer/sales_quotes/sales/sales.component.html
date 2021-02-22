@@ -1,0 +1,474 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="row">
+      <div class="col-sm-4">
+        <app-card cardTitle="Datos Cliente" [options]="false">
+          <div class="row">
+            <div class="col-md-12">
+              <button type="button" class="btn btn-icon btn-primary" ngbTooltip="Nuevo Cliente"
+                style="position:absolute; bottom:34px; right:0px;" (click)="ver(clienteModal, 'cliente', '')"><i
+                  class="feather icon-user"></i></button>
+            </div>
+            <div class="col-md-10">
+              <ng-select [items]="clientes" bindLabel="nombre" bindValue="idcliente" [(ngModel)]="ClienteId">
+              </ng-select>
+            </div>
+          </div>
+        </app-card>
+      </div>
+      <div class="col-sm-8" *ngIf="ClienteId != '0'">
+        <app-card cardTitle="Busqueda de Ventas o Productos" [options]="false">
+          <div class="row">
+            <div class="col-sm-4">
+              <select name="sucursal" class="form-control form-control-default"
+                (change)="cargarProductos($event.target.value)">
+                <option [value]="0">Seleccionar...</option>
+                <option [value]="sucu.idsucursal" *ngFor="let sucu of sucursal">{{sucu.sucursal}}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <ng-select [items]="productos" bindLabel="nombre" bindValue="idarticulo" [(ngModel)]="ProductoId">
+              </ng-select>
+            </div>
+            <div class="col-sm-2">
+              <button type="button" class="btn btn-icon btn-secondary" ngbTooltip="Buscar Producto o Servicio"
+                (click)="buscar(servicioModal)"><i class="feather icon-search"></i></button>
+            </div>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12" *ngIf="opcion">
+    <div class="row">
+      <div class="col-sm-12">
+        <app-card cardTitle="Detalle del Venta" [options]="false">
+          <div class="row">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Codigo</th>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Estilista</th>
+                    <th>%</th>
+                    <th>Cantidad</th>
+                    <th>Importe</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let field of fieldArray; let i = index">
+                  <tr>
+                    <td>{{i + 1}}</td>
+                    <td *ngIf="field.idcategoria == '1'">-------</td>
+                    <td *ngIf="field.idcategoria == '2'">{{field.codigobarras}}</td>
+                    <td>{{field.tipo}}</td>
+                    <td>{{field.nombre}}</td>
+                    <td>{{field.personal}}</td>
+                    <td>{{field.comision}}%</td>
+                    <td align="right">{{field.cantidadusar}}</td>
+                    <td align="right">{{field.importe | currency: 'MXN'}}</td>
+                    <td align="right">{{field.total | currency: 'MXN'}}</td>
+                    <td>
+                      <button type="button" class="btn btn-icon btn-info" ngbTooltip="Agregar Uso de Producto"
+                        (click)="ver(productoModal, 'producto', field)" *ngIf="field.idcategoria == '1'"><i
+                          class="feather icon-download"></i></button>
+                      <button type="button" class="btn btn-icon btn-warning" ngbTooltip="Modificar Precio o Comision"
+                        (click)="ver(accesUsuarioModal, 'acceso', field)"><i class="feather icon-edit-1"></i></button>
+                        <button type="button" class="btn btn-icon btn-danger" ngbTooltip="Eliminar Producto o Servicio"
+                        (click)="deleteFieldValue(i, field.id)"><i class="feather icon-x-square"></i></button>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let artme of articuloMerma; let j = index">
+                    <td colspan="3" *ngIf="field.id == artme.id">
+                      Nombre: {{artme.nombre}}
+                    </td>
+                    <td *ngIf="field.id == artme.id">
+                      Cantidad Usada: {{artme.cantidadusar + ' ' + artme.presentacion}}
+                    </td>
+                    <td *ngIf="field.id == artme.id">
+                      <button type="button" class="btn btn-icon btn-info" ngbTooltip="Actualizar Cantidad Producto"
+                        (click)="actualizarMerma(j)"><i class="feather icon-edit"></i></button>
+                      <button type="button" class="btn btn-icon btn-danger" ngbTooltip="Quitar Producto"
+                        (click)="eliminarMerma(j)"><i class="feather icon-x-square"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="8" align="right">Subtotal</td>
+                    <td align="right">{{subtotal | currency: 'MXN'}}</td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </app-card>
+      </div>
+      <div class="col-sm-12" *ngIf="opcion">
+        <app-card cardTitle="Venta" [options]="false">
+          <div class="row">
+            <div class="col-md-4">
+              <label>Tipo de Pago</label>
+              <ng-select [items]="mpagos" bindLabel="mpagos" bindValue="idmpagos" [(ngModel)]="MPagosId" (change)="habilitarboton()"></ng-select>
+            </div>
+            <div class="col-md-2">
+              <label>Descuento</label>
+              <input #descuentos type="number" class="form-control" placeholder="0" name="descuento" min="0" max="100"
+                (change)="sumar()" [(ngModel)]="descuento">
+            </div>
+            <div class="col-md-3">
+              <label>Subtotal</label><br>{{subtotal | currency: 'MXN'}}
+            </div>
+            <div class="col-md-3">
+              <label>Total</label><br>{{total | currency: 'MXN'}}
+            </div>
+          </div>
+          <div class="row">
+            <!--<div class="col-md-8" style="text-align: center">
+              <button type="button" class="btn btn-warning" (click)="guardarVenta()"><i
+                  class="fas fa-secundary"></i>Guardar Venta</button>
+            </div>-->
+            <div class="col-md-12" style="text-align: center">
+              <button type="button" class="btn btn-info" (click)="finalizarVenta()" [disabled]="opcionguardar"><i
+                  class="fas fa-money-bill"></i>Terminar Venta</button>
+            </div>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #servicioModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Cliente</h4>
+  </div>
+  <div class="modal-body">
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <tr>
+          <th>Codigo</th>
+          <th style="text-align:center; width:10%">Descripción</th>
+          <th>Precio</th>
+          <th *ngIf="articulo.cantidad != 0">Cantidad Actual</th>
+          <th>Cantidad</th>
+          <th>Total</th>
+        </tr>
+        <tr>
+          <td *ngIf="articulo.idcategoria == '1'">-------</td>
+          <td *ngIf="articulo.idcategoria == '2'">{{articulo.codigobarras}}</td>
+          <td>{{articulo.nombre}}</td>
+          <td>{{articulo.importe | currency: 'MXN'}}</td>
+          <td *ngIf="articulo.cantidad != 0">{{articulo.cantidad}}</td>
+          <td *ngIf="articulo.cantidad != 0"><input #cantidadusar type="number" class="form-control" placeholder="0"
+              name="cantidadusar" [min]="0" [max]="articulo.cantidad" [(ngModel)]="articulo.cantidadusar">
+          </td>
+          <td *ngIf="articulo.cantidad == 0"><input #cantidadusar type="number" class="form-control" placeholder="0"
+              name="cantidadusar" [min]="0" [max]="1" [(ngModel)]="articulo.cantidadusar">
+          </td>
+          <td>{{(articulo.cantidadusar * articulo.importe) | currency: 'MXN' }}</td>
+        </tr>
+        <tr>
+          <th colspan="2">Personal</th>
+          <th colspan="2">Comisión</th>
+          <th colspan="2">Total Comisión</th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <ng-select [items]="personal" bindLabel="nombre" bindValue="idpersonal" [dropdownPosition]="'top'"
+              (change)="obtenerDato($event, 'comision')" [(ngModel)]="PersonalId"></ng-select>
+          </td>
+          <td colspan="2" align="center">
+            <h3>{{comision}} %</h3>
+          </td>
+          <td colspan="2" align="center">
+            <label>{{(comision * (articulo.cantidadusar * articulo.importe)) / 100 | currency: 'MXN'}}</label>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="addFieldValue()"><i
+        class="feather icon-save"></i>Agregar</button>
+  </div>
+</ng-template>
+
+<ng-template #clienteModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Cliente</h4>
+  </div>
+  <div class="modal-body">
+    <form id="form-cliente" #validationClientes="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-4 m-b-30">
+            <label>Nombre</label>
+            <input type="text" class="form-control" placeholder="Nombre" name="nombre" [(ngModel)]="cliente.nombre">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Apellido</label>
+            <input type="text" class="form-control" placeholder="Apellido" name="apaterno"
+              [(ngModel)]="cliente.apaterno">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Apellido</label>
+            <input type="text" class="form-control" placeholder="Apellido" name="amaterno"
+              [(ngModel)]="cliente.amaterno">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 m-b-30">
+            <label>Movil</label>
+            <input type="text" class="form-control" placeholder="Movil" name="movil" [(ngModel)]="cliente.movil">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Correo</label>
+            <input type="text" class="form-control" placeholder="Correo" name="correo" [(ngModel)]="cliente.correo">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardarCliente()"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>
+
+<ng-template #accesUsuarioModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Seguridad</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12 m-b-30">
+        <label>Para hacer cambios de importe y comision se necesita de un usuario y contraseña</label>
+      </div>
+     <div class="col-md-12 m-b-30">
+        <label>Usuario</label>
+        <input type="text" class="form-control" placeholder="Usuario" name="importe" [(ngModel)]="acceso.usuario">
+      </div>
+      <div class="col-md-12 m-b-30">
+        <label>Contraseña</label>
+        <input type="password" class="form-control" placeholder="Contraseña" name="password" [(ngModel)]="acceso.password">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+      <button type="button" class="btn btn-primary" (click)="acceder(productoMModal)"><i
+        class="feather icon-save"></i>Acceder</button>
+  </div>
+</ng-template>
+
+<ng-template #productoMModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Modificar Precio o Comision de {{producto.nombre | titlecase}}</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+     <div class="col-md-3 m-b-30">
+        <label>Precio</label>
+        <input type="number" class="form-control" placeholder="Importe" name="Importe" [(ngModel)]="producto.importe">
+      </div>
+      <div class="col-md-3 m-b-30">
+        <label>Comision</label>
+        <input type="number" class="form-control" [max]="40" placeholder="Comision" name="comision" [(ngModel)]="producto.comision">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+      <button type="button" class="btn btn-primary" (click)="guardarModificacion()"><i
+        class="feather icon-save"></i>Guardar Modificacion</button>
+  </div>
+</ng-template>
+
+<ng-template #productoModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Productos Usados Para el Servicio {{producto.nombre | titlecase}}</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-8 m-b-30">
+        <ng-select [items]="merma" bindLabel="nombre" bindValue="idarticulo" [(ngModel)]="MermaId"></ng-select>
+      </div>
+      <div class="col-md-4 m-b-30">
+        <button type="button" class="btn btn-icon btn-secondary" ngbTooltip="Buscar Producto o Servicio"
+          (click)="buscarMerma()"><i class="feather icon-search"></i></button>
+      </div>
+      <div class="col-md-12 m-b-30" *ngIf="artmerma">
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Codigo</th>
+                <th>Descripción</th>
+                <th>Cantidad Actual</th>
+                <th>Cantidad A Usar</th>
+                <th>Total Restante</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{artmerma.codigobarras}}</td>
+                <td>{{artmerma.nombre}}</td>
+                <td>{{artmerma.cantidad}}</td>
+                <td><input #cantidadusar type="number" class="form-control" placeholder="0" name="cantidadusar"
+                    [(ngModel)]="artmerma.cantidadusar" [min]="0" [max]="artmerma.cantidad"></td>
+                <td>{{artmerma.cantidad - artmerma.cantidadusar}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardarMerma()"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>
+
+<ng-template #actuMermaModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Actualizar Cantidad de {{artmerma.nombre}}</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <input #cantidadusar type="number" class="form-control" placeholder="0" name="cantidadusar"
+        [(ngModel)]="artmerma.cantidadusar" [min]="0" [max]="artmerma.cantidad">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardarMerma()"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>
+
+<ng-template #ventadModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Venta</h4>
+  </div>
+  <div class="modal-body" *ngIf="ventas">
+    <div id="printdiv">
+      <div class="row">
+        <div class="col-md-12 " style="align-items: center;">
+          <h4 align="center">VENTA</h4>
+          <span class="b-title">
+            <h2 align="center">LAURA CARDONA </h2>
+          </span>
+          <h6 align="center">GRUPO ESPECIALIZADO EN DISEÑO DE IMAGEN SA DE CV</h6>
+        </div>
+      </div>
+
+      <hr>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Cliente:</strong>
+            </div>
+            <div class="col-sm-9" style="border-bottom: 1px solid">
+              {{ventas.cliente | titlecase}}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Fecha:</strong>
+            </div>
+            <div class="col-sm-9" style="border-bottom: 1px solid">
+              {{today | date:'fullDate' | titlecase}}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Hora Entrada:</strong>
+            </div>
+            <div class="col-sm-9" style="border-bottom: 1px solid">
+              {{ventas.fhentrada | date:'h:mm a' }}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Folio:</strong>
+            </div>
+            <div class="col-sm-9" style="border-bottom: 1px solid">
+              {{ventas.folio}}
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-3">
+              <strong>Hora Salida: </strong>
+            </div>
+            <div class="col-sm-9" style="border-bottom: 1px solid">
+              {{ventas.fhsalida | date:'h:mm a'}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <br><br>
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+          <tr>
+            <th>No</th>
+            <th>Producto o Servicio</th>
+            <th>Cantidad</th>
+            <th>Importe</th>
+          <tr *ngFor="let ventd of ventadetalle; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ ventd.nombre }}</td>
+            <td align="center">{{ ventd.cantidad }}</td>
+            <td align="right">{{ ventd.precio | currency: 'MXN' }}</td>
+          </tr>
+          <tr>
+            <td colspan="3" align="right">Subtotal:</td>
+            <td align="right">{{ ventas.subtotal | currency: 'MXN' }}</td>
+          </tr>
+          <tr>
+            <td colspan="3" align="right">Descuento:</td>
+            <td align="right">- {{ ventas.descuentos | currency: 'MXN' }}</td>
+          </tr>
+          <tr>
+            <td colspan="3" align="right">Total:</td>
+            <td align="right">{{ ventas.total | currency: 'MXN' }}</td>
+          </tr>
+          <tr>
+            <td colspan="4"><label>({{letra}})</label></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrarVenta()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-info" [useExistingCss]="true" printSectionId="printdiv" ngxPrint><i
+        class="feather icon-printer"></i>Imprimir Recibo</button>
+  </div>
+</ng-template>

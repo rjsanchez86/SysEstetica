@@ -1,0 +1,150 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Productos" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+          <!--<button type="button" class="btn btn-success" (click)="ver('increase', '', productoModal)"><i
+              class="feather icon-edit-2"></i>Aumentar % a
+            Producto</button>-->
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', productoModal)"><i
+              class="feather icon-edit-2"></i>Agregar
+            Producto</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Nombre</th>
+              <th>Codigo </th>
+              <th>Importe </th>
+              <th>Estatus</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of productos">
+              <td>{{producto.idarticulo}}</td>
+              <td>{{producto.nombre}}</td>
+              <td>{{producto.codigobarras}}</td>
+              <td>{{producto.importe | currency: 'USD' | lowercase }}</td>
+              <td><span _ngcontent-nqr-c153=""
+                  class="badge m-r-5 badge-primary ng-tns-c131-179">{{producto.estatus}}</span></td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-primary" ngbTooltip="Ver Producto"
+                  (click)="ver('view', producto, productoModal)"><i class="feather icon-eye"></i></button>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Modificar Producto"
+                  (click)="ver('update', producto, productoModal)"><i class="feather icon-edit-1"></i></button>
+                <!--<button type="button" class="btn btn-icon btn-outline-danger"
+              ngbTooltip="Cambiar Estatus"><i class="feather icon-check"></i></button>-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+<ng-template #productoModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Producto</h4>
+  </div>
+  <div class="modal-body" *ngIf="status == 'increase'">
+    <form id="form-empresa" #validationEmpresa="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <h5>Porcentaje a incrementar en el producto</h5>
+            <input type="number" class="form-control" placeholder="Porcentaje del Producto" name="porcentaje"
+              [(ngModel)]="porcentaje">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-body" *ngIf="status == 'view'">
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>Nombre del producto</h5> {{prod.nombre}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Codigo del producto</h5> {{prod.codigobarras}}
+      </div>
+    </div>
+  </div>
+  <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+    <form id="form-empresa" #validationEmpresa="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-4 m-b-30">
+            <label>Nombre del Producto</label>
+            <input #nombre type="text" class="form-control" placeholder="Nombre del Producto" name="nombre"
+              [(ngModel)]="prod.nombre" (input)="nombre.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Codigo del Producto</label>
+            <input #codigobarras type="text" class="form-control" placeholder="Codigo del Producto" name="codigobarras"
+              [(ngModel)]="prod.codigobarras" (input)="codigobarras.value=$event.target.value.toUpperCase()">
+          </div>
+        </div>
+        <div class="row">
+           <div class="col-md-3 m-b-30">
+            <label>Proveedor del Producto</label>
+            <select name="proveedor" [(ngModel)]="prod.idproveedor" class="form-control form-control-default">
+              <option [value]="0">Seleccionar...</option>
+              <option [value]="prov.idproveedor" *ngFor="let prov of proveedor">{{prov.proveedor}}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Marca del Producto</label>
+            <select name="marca" [(ngModel)]="prod.idmarca" class="form-control form-control-default" (change)="obtenerSubMarca($event.target.value)">
+              <option [value]="0">Seleccionar...</option>
+              <option [value]="marc.idmarca" *ngFor="let marc of marca">{{marc.marca}}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Submarca del Producto</label>
+            <select name="submarca" [(ngModel)]="prod.idsubmarca" class="form-control form-control-default">
+              <option [value]="0">Seleccionar...</option>
+              <option [value]="smar.idsubmarca" *ngFor="let smar of submarca">{{smar.submarca}}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Presentación del Producto</label>
+            <input #presentacion type="text" class="form-control" placeholder="Presentacion" name="presentacion"
+              [(ngModel)]="prod.presentacion" (input)="presentacion.value=$event.target.value.toUpperCase()">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 m-b-30">
+            <label>Importe Producto</label>
+            <input #importe type="number" class="form-control" min="1" max="100" step="0.00"
+              placeholder="Costo del Producto" name="importe" [(ngModel)]="prod.importe">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Minimo Cantidad del Producto</label>
+            <input #minstock type="number" class="form-control" min="1" max="100" step="0"
+              placeholder="Minima Cantidad del Producto" name="minstock" [(ngModel)]="prod.minstock">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar()"
+      *ngIf="status == 'update' || status == 'new' || status == 'increase'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

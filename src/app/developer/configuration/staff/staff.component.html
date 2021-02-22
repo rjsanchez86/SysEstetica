@@ -1,0 +1,162 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Personal" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6 m-b-30" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6 m-b-30" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', staffModal)"><i
+              class="feather icon-edit-2"></i>Nuevo Personal</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Personal</th>
+              <th>Puesto</th>
+              <th>Telefono</th>
+              <th>Movil</th>
+              <th>Correo</th>
+              <th>Estatus</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let persona of personal">
+              <td>{{persona.idpersonal}}</td>
+              <td>{{persona.nombre}} <br> {{persona.apaterno}} {{persona.amaterno}}</td>
+              <td>{{persona.puesto}}</td>
+              <td>{{persona.local}}</td>
+              <td><a href="https://api.whatsapp.com/send?phone=+52{{persona.movil}}&amp;text=Hola%20{{persona.nombre}}"
+                  target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>&nbsp;&nbsp;&nbsp;<a
+                  href="tel:{{persona.movil}}">{{persona.movil}}</a></td>
+              <td><a href="mailto:{{persona.correo}}">{{persona.correo}}</a></td>
+              <td><span _ngcontent-nqr-c153=""
+                  class="badge m-r-5 badge-primary ng-tns-c131-179">{{persona.estatus}}</span></td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-primary" ngbTooltip="Ver Personal"
+                  (click)="ver('view', persona, staffModal)"><i class="feather icon-eye"></i></button>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Actualizar Personal"
+                  (click)="ver('update', persona, staffModal)"><i class="feather icon-edit-1"></i></button>
+                <button type="button" class="btn btn-icon btn-outline-danger" ngbTooltip="Estatus Personal"
+                  (click)="estatus(persona)"><i class="feather icon-check"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+<ng-template #staffModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Personal</h4>
+  </div>
+  <div class="modal-body" *ngIf="status == 'view'">
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>Nombre Personal</h5> {{per.nombre}} {{per.apaterno}} {{per.amaterno}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Fecha de Nacimiento</h5> {{per.fnacimiento}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>Celular</h5> {{per.movil}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Telefono Local</h5> {{per.local}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Correo</h5> {{per.correo}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>CURP</h5> {{per.curp}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>RFC</h5> {{per.rfc}}
+      </div>
+    </div>
+  </div>
+  <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+    <form id="form-sucursal" #validationStaff="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-4 m-b-30">
+            <label>Perfil</label>
+            <select name="miselect" [(ngModel)]="per.idpuesto" class="form-control form-control-default">
+              <option [value]="0" selected>Selecionar...</option>
+              <option [value]="puesto.idpuesto" *ngFor="let puesto of puestos">{{puesto.puesto}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 m-b-30">
+            <label>Nombre</label>
+            <input #nombre type="text" class="form-control" placeholder="Nombre" name="nombre" [(ngModel)]="per.nombre"
+              (input)="nombre.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Apellido</label>
+            <input #aparteno type="text" class="form-control" placeholder="Apellido" name="apaterno"
+              [(ngModel)]="per.apaterno" (input)="aparteno.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Apellido</label>
+            <input #amaterno type="text" class="form-control" placeholder="Apellido" name="amaterno"
+              [(ngModel)]="per.amaterno" (input)="amaterno.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Fecha de Nacimiento</label>
+            <input #fnacimiento type="date" class="form-control" placeholder="Fecha Nacimiento" name="fnacimiento"
+              [(ngModel)]="per.fnacimiento">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 m-b-30">
+            <label>Celular</label>
+            <input #movil type="text" class="form-control" placeholder="Celular" name="movil" [(ngModel)]="per.movil">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Telefono Local</label>
+            <input #local type="text" class="form-control" placeholder="Telefono Local" name="local"
+              [(ngModel)]="per.local">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Correo</label>
+            <input #correo type="text" class="form-control" placeholder="Correo" name="correo" [(ngModel)]="per.correo">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>CURP</label>
+            <input #curp type="text" class="form-control" placeholder="CURP" name="curp" [(ngModel)]="per.curp"
+              (input)="curp.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>RFC</label>
+            <input #rfc type="text" class="form-control" placeholder="RFC" name="rfc" [(ngModel)]="per.rfc"
+              (input)="rfc.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Color</label><br>
+            <input class="form-control" name="color" [(colorPicker)]="color" [style.background]="color" />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar()" *ngIf="status == 'update' || status == 'new'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

@@ -1,0 +1,119 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Registro de Clientes" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', clienteModal)"><i
+              class="feather icon-edit-2"></i>Agregar
+            Cliente</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Nombre</th>
+              <th>Apellidos </th>
+              <th>Apellidos </th>
+              <th>Fecha de Nacimiento </th>
+              <th>Movil </th>
+              <th>Correo Electronico</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cliente of clientes">
+              <td>{{cliente.idcliente}}</td>
+              <td>{{cliente.nombre}}</td>
+              <td>{{cliente.apaterno}}</td>
+              <td>{{cliente.amaterno}}</td>
+              <td>{{cliente.fnacimiento}}</td>
+              <td><a href="https://api.whatsapp.com/send?phone=+52{{cliente.movil}}&amp;text=Hola%20{{cliente.nombre}}"
+                  target="_blank" rel="noopener" [style.visibility]="cliente.movil == ''? 'hidden': 'visible'"><i
+                    class="fab fa-whatsapp"></i></a>&nbsp;&nbsp;&nbsp;<a
+                  href="tel:{{cliente.movil}}">{{cliente.movil}}</a></td>
+              <td><a href="mailto:{{cliente.correo}}">{{cliente.correo}}</a></td>
+              <td><button type="button" class="btn btn-sm btn-primary" ngbTooltip="Actualizar Datos"
+                  (click)="ver('update',cliente, clienteModal)">Actualizar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+<ng-template #clienteModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Cliente</h4>
+  </div>
+  <div class="modal-body">
+    <form id="form-cliente" #validationClientes="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-4 m-b-30">
+            <label>Nombre</label>
+            <input #nombre type="text" class="form-control" placeholder="Nombre" name="nombre" [(ngModel)]="cli.nombre"
+              (input)="nombre.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Apellido</label>
+            <input #apaterno type="text" class="form-control" placeholder="Apellido" name="apaterno"
+              [(ngModel)]="cli.apaterno" (input)="apaterno.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Apellido</label>
+            <input #amaterno type="text" class="form-control" placeholder="Apellido" name="amaterno"
+              [(ngModel)]="cli.amaterno" (input)="amaterno.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Fecha de Nacimiento</label>
+            <input #fnacimiento type="date" class="form-control" placeholder="Fecha Nacimiento" name="fnacimiento"
+              [(ngModel)]="cli.fnacimiento">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Sexo</label>
+            <select class="form-control" name="sexo" [(ngModel)]="cli.sexo">
+              <option value="0" selected>Seleccione...</option>
+              <option value="MUJER">MUJER</option>
+              <option value="HOMBRE">HOMBRE</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3 m-b-30">
+            <label>Movil</label>
+            <input #movil type="text" class="form-control" placeholder="Movil" name="movil" [(ngModel)]="cli.movil">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>Correo</label>
+            <input #correo type="text" class="form-control" placeholder="Correo" name="correo" [(ngModel)]="cli.correo">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>CURP</label>
+            <input #curp type="text" class="form-control" placeholder="CURP" name="curp" [(ngModel)]="cli.curp"
+              (input)="curp.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-3 m-b-30">
+            <label>RFC</label>
+            <input #rfc type="text" class="form-control" placeholder="RFC" name="rfc" [(ngModel)]="cli.rfc"
+              (input)="rfc.value=$event.target.value.toUpperCase()">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar(validationClientes)"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

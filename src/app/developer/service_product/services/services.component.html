@@ -1,0 +1,142 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Servicios" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+          <!--<button type="button" class="btn btn-success" (click)="ver('increase', '', servicioModal)"><i
+              class="feather icon-edit-2"></i>Aumentar % a
+            Servicio</button>-->
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', servicioModal)"><i
+              class="feather icon-edit-2"></i>Agregar
+            Servicio</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Clasificación </th>
+              <th>Nombre </th>
+              <th>Codigo </th>
+              <th>Tiempo </th>
+              <th>Importe </th>
+              <th>Estatus </th>
+              <th>Acciones </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let servicio of servicios">
+              <td>{{servicio.idarticulo}}</td>
+              <td>{{servicio.clasificacion}}</td>
+              <td>{{servicio.nombre}}</td>
+              <td>{{servicio.codigobarras}}</td>
+              <td>{{servicio.tiempo}}</td>
+              <td>{{servicio.importe | currency: 'USD' | lowercase }}</td>
+              <td><span _ngcontent-nqr-c153=""
+                  class="badge m-r-5 badge-primary ng-tns-c131-179">{{servicio.estatus}}</span></td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-primary" ngbTooltip="Ver Servicio"
+                  (click)="ver('view', servicio, servicioModal)"><i class="feather icon-eye"></i></button>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Modificar Servicio"
+                  (click)="ver('update', servicio, servicioModal)"><i class="feather icon-edit-1"></i></button>
+                <!--<button type="button" class="btn btn-icon btn-outline-danger"
+                ngbTooltip="Cambiar Estatus"><i class="feather icon-check"></i></button>-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+<ng-template #servicioModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Servicio</h4>
+  </div>
+  <div class="modal-body" *ngIf="status == 'increase'">
+    <form id="form-empresa" #validationEmpresa="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <h5>Porcentaje a incrementar en el servicio</h5>
+            <input type="number" class="form-control" placeholder="Porcentaje del Servicio" name="porcentaje"
+              [(ngModel)]="porcentaje">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-body" *ngIf="status == 'view'">
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>Clasificación del servicio</h5> {{serv.clasificacion}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Nombre del servicio</h5> {{serv.nombre}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Codigo del servicio</h5> {{serv.codigobarras}}
+      </div>
+      <div class="col-md-6 m-b-30">
+        <h5>Tiempo del Servicio</h5> {{serv.tiempo}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <h5>Importe del Servicio</h5> {{serv.importe}}
+      </div>
+    </div>
+  </div>
+  <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+    <form id="form-empresa" #validationEmpresa="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <h5>Clasificación</h5>
+            <select name="idclasificacion" [(ngModel)]="serv.idclasificacion" class="form-control form-control-default">
+              <option [value]="0">Seleccionar...</option>
+              <option [value]="clasi.idclasificacion" *ngFor="let clasi of clasificacion">{{clasi.clasificacion}}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6 m-b-30">
+            <label>Nombre del Servicio</label>
+            <input #nombre type="text" class="form-control" placeholder="Nombre del Servicio" name="nombre"
+              [(ngModel)]="serv.nombre" (input)="nombre.value=$event.target.value.toUpperCase()">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 m-b-30">
+            <label>Codigo de Barras del Servicio</label>
+            <input #codigobarras type="text" class="form-control" placeholder="Codigo del Servicio" name="codigobarras"
+              [(ngModel)]="serv.codigobarras" (input)="codigobarras.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Tiempo del Servicio</label>
+            <input #tiempo type="text" class="form-control" placeholder="00:00:00" name="tiempo"
+              [(ngModel)]="serv.tiempo" [textMask]="{mask: maskHour}">
+          </div>
+          <div class="col-md-4 m-b-30">
+            <label>Importe del Servicio</label>
+            <input #importe type="number" class="form-control" min="1" max="100" step="0.00"
+              placeholder="Importe del Servicio" name="importe" [(ngModel)]="serv.importe">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar()"
+      *ngIf="status == 'update' || status == 'new' || status == 'increase'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

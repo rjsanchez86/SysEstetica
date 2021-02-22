@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Proveedores" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6 m-b-30" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6 m-b-30" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', proveedorModal)"><i
+              class="feather icon-edit-2"></i>Nueva Proveedor</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Proveedor</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let prov of proveedor">
+              <td>{{prov.idproveedor}}</td>
+              <td>{{prov.proveedor}}</td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Actualizar Dato"
+                  (click)="ver('update', prov, proveedorModal)"><i class="feather icon-edit-1"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+<<ng-template #proveedorModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Unidad</h4>
+  </div>
+  <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+    <form id="form-sucursal" #validationEmpresa="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <label>Proveedor</label>
+            <input #proveedor type="text" class="form-control" placeholder="Proveedor" name="proveedor"
+              [(ngModel)]="pro.proveedor" (input)="proveedor.value=$event.target.value.toUpperCase()">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <label>Contacto Proveedor</label>
+            <input #nombrecontacto type="text" class="form-control" placeholder="Nombre Contacto" name="nombrecontacto"
+              [(ngModel)]="pro.nombrecontacto" (input)="nombrecontacto.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-6 m-b-30">
+            <label>Telefono Proveedor</label>
+            <input #telefonocontacto type="text" class="form-control" placeholder="Telefono Contacto"
+              name="telefonocontacto" [(ngModel)]="pro.telefonocontacto">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <label>Direccion </label>
+            <input #direccion type="text" class="form-control" placeholder="Direccion" name="direccion"
+              [(ngModel)]="pro.direccion" (input)="direccion.value=$event.target.value.toUpperCase()">
+          </div>
+          <div class="col-md-6 m-b-30">
+            <label>Ciudad </label>
+            <input #ciudad type="text" class="form-control" placeholder="Ciudad" name="ciudad" [(ngModel)]="pro.ciudad" (input)="ciudad.value=$event.target.value.toUpperCase()">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar()" *ngIf="status == 'update' || status == 'new'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+  </ng-template>

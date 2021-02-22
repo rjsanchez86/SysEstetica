@@ -1,0 +1,99 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Usuarios" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', UsuarioModal)"><i
+              class="feather icon-edit-2"></i>Agregar Usuario</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Nombre</th>
+              <th>Usuario</th>
+              <th>Estatus </th>
+              <th>Fecha Acceso </th>
+              <th>Acciones </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuario of usuarios">
+              <td>{{usuario.idseguridad}}</td>
+              <td>{{usuario.nombre}}</td>
+              <td>{{usuario.usuario}}</td>
+              <td><span _ngcontent-nqr-c153=""
+                class="badge m-r-5 badge-primary ng-tns-c131-179">{{usuario.estatus}}</span></td>
+              <td>{{usuario.facceso}}</td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Actualizar Usuario"
+                  (click)="ver('update', usuario, UsuarioModal)"><i class="feather icon-edit-1"></i></button>
+                <button type="button" class="btn btn-icon btn-outline-danger" ngbTooltip="Cambiar Estatus"
+                  (click)="estatus(usuario)"><i class="feather icon-check"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<ng-template #UsuarioModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Usuario</h4>
+  </div>
+  <div class="modal-body" *ngIf="usu">
+    <div class="row">
+      <div class="col-md-12 m-b-30">
+        <label>Personal</label>
+        <select name="miselect" [(ngModel)]="usu.idpersonal" class="form-control form-control-default" [disabled]="opcion">
+          <option [value]="0" *ngIf="usu.idpersonal == 0 ? 'selected' : ''">Seleccionar...</option>
+          <option [value]="perso.idpersonal" *ngFor="let perso of personal">{{perso.nombre}}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-12 m-b-30">
+        <label>Perfil</label>
+        <select name="miselect" [(ngModel)]="usu.idperfil" class="form-control form-control-default">
+          <option [value]="0" *ngIf="usu.idperfil == 0 ? 'selected' : ''">Seleccionar...</option>
+          <option [value]="perf.idperfil" *ngFor="let perf of perfiles">{{perf.perfil}}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-12 m-b-30">
+        <label>Sucursales a Administrar</label>
+        <ng-select [(ngModel)]="SucursalId" [items]="sucursales" bindLabel="sucursal" bindValue="idsucursal" [selectableGroup]="true"
+            [multiple]="true" (change)="obtenerDato($event, 'sucur')">
+          </ng-select>
+      </div>
+      <div class="col-md-12 m-b-30">
+        <label>Usuario</label>
+        <input type="text" [(ngModel)]="usu.usuario" name="usuario" #usuario="ngModel" class="form-control" [disabled]="opcion"
+           required />
+      </div>
+      <div class="col-md-6 m-b-30">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="usu.password" name="password" #password="ngModel" class="form-control" required />
+      </div>
+      <div class="col-md-6 m-b-30">
+        <label>Confirmar Contraseña</label>
+        <input type="password" [(ngModel)]="usu.password2" name="password2" #password2="ngModel" class="form-control" />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+      <button type="button" class="btn btn-primary" (click)="guardar()" *ngIf="status == 'update' || status == 'new'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

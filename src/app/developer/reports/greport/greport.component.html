@@ -1,0 +1,75 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Inventario" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6 m-b-30" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+            class="table table-striped row-border table-hover">
+            <thead>
+              <tr>
+                <th>Folio</th>
+                <th>Fecha</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+                <th>Cliente</th>
+                <th>Servicio</th>
+                <th>Efectivo</th>
+                <th>Tarjeta</th>
+                <th>Tarjeta AMEX</th>
+                <th>Total</th>
+                <th>I.V.A</th>
+                <th>Subtotal</th>
+                <th>Estilista</th>
+                <th>%</th>
+                <th>Servicio</th>
+                <th>Importe</th>
+                <th>Subtotal</th>
+                <th>Producto</th>
+                <th>Costo Producto</th>
+                <th>Costo</th>
+                <th>Utilidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let repo of greporte; let i = index;">
+                <td>{{ repo.folio }}</td>
+                <td>{{ repo.fecha }}</td>
+                <td>{{ repo.horaentrada }}</td>
+                <td>{{ repo.horasalida }}</td>
+                <td>{{ repo.cliente }}</td>
+                <td>{{ repo.servicio }}</td>
+                <td align="right" *ngIf = "repo.mpagos == 'EFECTIVO'">{{ repo.pservicio }}</td>
+                <td align="right" *ngIf = "repo.mpagos != 'EFECTIVO'">-----</td>
+                <td align="right" *ngIf = "repo.mpagos == 'TARJETA'">{{ repo.pservicio }}</td>
+                <td align="right" *ngIf = "repo.mpagos != 'TARJETA'">-----</td>
+                <td align="right" *ngIf = "repo.mpagos == 'TARJETA AMEX'">{{ repo.pservicio }}</td>
+                <td align="right" *ngIf = "repo.mpagos != 'TARJETA AMEX'">-----</td>
+                <td align="right">{{ repo.precio  }}</td>
+                <td align="right">{{ repo.iva  }}</td>
+                <td align="right">{{ repo.subtotal  }}</td>
+                <td>{{ repo.personal }}</td>
+                <td align="right"> {{ repo.comision }}%</td>
+                <td align="right">{{ repo.servicioper  }}</td>
+                <td align="right">{{ repo.importeper  }}</td>
+                <td align="right">{{ repo.subtotalper  }}</td>
+                <td *ngIf = "repo.producto != ''">{{ repo.producto }}</td>
+                <td *ngIf = "repo.producto == ''">-----</td>
+                <td align="right">{{ repo.costo_producto  }}</td>
+                <td align="right">{{ repo.costo  }}</td>
+                <td>{{ repo.utilidad }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <br>
+    </app-card>
+  </div>
+</div>

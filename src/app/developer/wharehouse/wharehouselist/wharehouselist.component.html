@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Kardex" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Sucursal</th>
+              <th>Almacen </th>
+              <th>Proceso </th>
+              <th>Producto </th>
+              <th>Entrada </th>
+              <th>Salida </th>
+              <th>Entrada Merma</th>
+              <th>Salida Merma</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let list of lista; index as i">
+              <td>{{i+1}}</td>
+              <td>{{list.sucursal}}</td>
+              <td>{{list.almacen}}</td>
+              <td>{{list.proceso}}</td>
+              <td>{{list.nombre}}</td>
+              <td>{{list.entrada}}</td>
+              <td>{{list.salida}}</td>
+              <td>{{list.merma_entrada}}</td>
+              <td>{{list.merma_salida}}</td>
+              <td>{{list.fecha}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>

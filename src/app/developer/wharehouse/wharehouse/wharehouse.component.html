@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Registro de Almacenes" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6 m-b-30" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6 m-b-30" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', almacenesModal)"><i
+              class="feather icon-edit-2"></i>Nueva Clasificación</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No. </th>
+              <th>Sucursal </th>
+              <th>Almacen </th>
+              <th>Acciones </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let alma of almacen">
+              <td>{{alma.idalmacen}}</td>
+              <td>{{alma.sucursal}}</td>
+              <td>{{alma.almacen}}</td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Actualizar Dato"
+                  (click)="ver('update', alma, almacenesModal)"><i class="feather icon-edit-1"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+<ng-template #almacenesModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos de la Almacen</h4>
+  </div>
+  <div class="modal-body" *ngIf="status == 'update' || status == 'new'">
+    <form id="form-sucursal" #validationClasificacion="ngForm">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-6 m-b-30">
+            <h5>Sucursal</h5>
+            <select name="idsucursal" [(ngModel)]="alm.idsucursal" class="form-control form-control-default">
+              <option [value]="0">Seleccionar...</option>
+              <option [value]="sucu.idsucursal" *ngFor="let sucu of sucursal">{{sucu.sucursal}}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6 m-b-30">
+            <label>Nombre del Almacen</label>
+            <input #almacen type="text" class="form-control" placeholder="Nombre del Almacen" name="almacen"
+              [(ngModel)]="alm.almacen" (input)="almacen.value=$event.target.value.toUpperCase()">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+    <button type="button" class="btn btn-primary" (click)="guardar()" *ngIf="status == 'update' || status == 'new'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>

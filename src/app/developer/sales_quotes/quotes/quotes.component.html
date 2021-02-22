@@ -1,0 +1,280 @@
+<div class="row">
+  <div class="col-xl-6 col-md-12">
+    <app-card cardTitle="Registro de Datos de Cita" [options]="false">
+      <div class="row">
+        <div class="col-md-12">
+          <button type="button" class="btn btn-primary" style="position:absolute; bottom:34px; right:0px;"
+            (click)="ver(clienteModal, 'cliente')">Nuevo Cliente</button>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Sucursal</label>
+          <ng-select [items]="sucursal" bindLabel="sucursal" bindValue="idsucursal"
+            (change)="obtenerDato($event, 'sucur')" [(ngModel)]="SucursalId">
+          </ng-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label>Cliente</label>
+          <ng-select [items]="clientes" bindLabel="nombre" bindValue="idcliente" (change)="obtenerDato($event, 'clien')"
+            [(ngModel)]="ClienteId">
+          </ng-select>
+        </div>
+        <div class="form-group col-md-6">
+          <label>Estilista</label>
+          <ng-select [items]="personal" bindLabel="nombre" bindValue="idpersonal" (change)="obtenerDato($event, 'pers')"
+            [(ngModel)]="PersonalId">
+          </ng-select>
+        </div>
+        <div class="form-group col-md-12">
+          <label>Servicio</label>
+          <ng-select [(ngModel)]="ArticulosId" [items]="articulos" bindLabel="articulo" bindValue="idarticulo"
+            [multiple]="true" (change)="obtenerDato($event, 'servi')">
+          </ng-select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label>Fecha a Agendar</label>
+          <input type="date" id="fecha" [(ngModel)]="Fecha" class="form-control" placeholder="Fecha">
+        </div>
+        <div class="form-group col-md-4">
+          <label>Hora a Agendar</label>
+          <input type="time" id="hora" [(ngModel)]="Hora" class="form-control" placeholder="Hora">
+        </div>
+        <div class="form-group col-md-4">
+          <label>Observaciones de la Cita</label>
+          <input type="text" class="form-control" placeholder="Escriba si se tiene una observación" name="observacion"
+            [(ngModel)]="observacion">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12" style="text-align:center;">
+          <button type="button" class="btn btn-primary" (click)="guardar()"><i class="feather icon-save"></i>Guardar
+            Cita</button>
+        </div>
+      </div>
+    </app-card>
+  </div>
+  <div class="col-xl-6 col-md-12">
+    <app-card cardTitle="Agenda" cardClass="elite-calendar" [options]="false">
+      <full-calendar [options]="calendarOptions"></full-calendar>
+    </app-card>
+  </div>
+  <div class="col-xl-12 col-md-12">
+    <app-card cardTitle="Lista de Agenda" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6 m-b-30" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Sucursal</th>
+              <th>Cliente</th>
+              <th>Personal</th>
+              <th>Fecha Cita</th>
+              <th>Hora Cita</th>
+              <th>Estatus</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let agenda of lagenda">
+              <td>{{agenda.idagenda}}</td>
+              <td>{{agenda.sucursal}}</td>
+              <td>{{agenda.cliente}}</td>
+              <td>{{agenda.personal}}</td>
+              <td>{{agenda.fcita}}</td>
+              <td>{{agenda.hcita}}</td>
+              <td><span _ngcontent-nqr-c153=""
+                  class="badge m-r-5 badge-primary ng-tns-c131-179">{{agenda.estatus}}</span>
+              </td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Ver Cita"
+                  (click)="detalleAgendaVer(agenda.idagenda)"><i class="feather icon-eye"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </app-card>
+  </div>
+
+  <ng-template #clienteModal>
+    <div class="modal-header">
+      <h4 class="modal-title">Datos del Cliente</h4>
+    </div>
+    <div class="modal-body">
+      <form id="form-cliente" #validationClientes="ngForm">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-md-4 m-b-30">
+              <label>Nombre</label>
+              <input type="text" class="form-control" placeholder="Nombre" name="nombre" [(ngModel)]="cliente.nombre">
+            </div>
+            <div class="col-md-4 m-b-30">
+              <label>Apellido</label>
+              <input type="text" class="form-control" placeholder="Apellido" name="apaterno"
+                [(ngModel)]="cliente.apaterno">
+            </div>
+            <div class="col-md-4 m-b-30">
+              <label>Apellido</label>
+              <input type="text" class="form-control" placeholder="Apellido" name="amaterno"
+                [(ngModel)]="cliente.amaterno">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 m-b-30">
+              <label>Movil</label>
+              <input type="text" class="form-control" placeholder="Movil" name="movil" [(ngModel)]="cliente.movil">
+            </div>
+            <div class="col-md-3 m-b-30">
+              <label>Correo</label>
+              <input type="text" class="form-control" placeholder="Correo" name="correo" [(ngModel)]="cliente.correo">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+        Ventana</button>
+      <button type="button" class="btn btn-primary" (click)="guardarCliente()"><i
+          class="feather icon-save"></i>Guardar</button>
+    </div>
+  </ng-template>
+
+  <ng-template #agendaModal>
+    <div class="modal-header">
+      <h4 class="modal-title">Datos del Cliente</h4>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4 m-b-30">
+          <h5>Nombre Cliente</h5> {{agenda.nombre}} {{agenda.apaterno}} {{agenda.amaterno}}
+        </div>
+        <div class="col-md-4 m-b-30">
+          <h5>Telefono Cliente</h5> <a
+            href="https://api.whatsapp.com/send?phone=+52{{agenda.movil}}&amp;text=Hola%20{{agenda.nombre}}"
+            target="_blank" rel="noopener" [style.visibility]="agenda.movil == ''? 'hidden': 'visible'"><i
+              class="fab fa-whatsapp"></i></a>&nbsp;&nbsp;&nbsp;<a href="tel:{{agenda.movil}}">{{agenda.movil}}</a>
+        </div>
+        <div class="col-md-4 m-b-30">
+          <h5>Correo Cliente</h5> <a href="mail:{{agenda.correo}}">{{agenda.correo}}</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 m-b-30">
+          <h5>Sucursal</h5> {{agenda.sucursal}}
+        </div>
+        <div class="col-md-4 m-b-30">
+          <h5>Servicios Solicitados</h5> {{agenda.servicio}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 m-b-30">
+          <h5>Persona Atender</h5> {{agenda.nper}} {{agenda.pper}} {{agenda.mper}}
+        </div>
+        <div class="col-md-4 m-b-30">
+          <h5>Persona Atender</h5>
+          <a href="https://api.whatsapp.com/send?phone=+52{{agenda.moper}}&amp;text=Hola%20{{agenda.nper}},%20tienes%20un%20servicio%20el%20día%20{{agenda.fcita}}%20a%20las%20{{agenda.hcita}}%20para%20el%20cliente%20{{agenda.nombre}}%20{{agenda.apaterno}}"
+            target="_blank" rel="noopener" [style.visibility]="agenda.moper == ''? 'hidden': 'visible'"><i
+              class="fab fa-whatsapp"></i></a>&nbsp;&nbsp;&nbsp;<a href="tel:{{agenda.moper}}">{{agenda.moper}}</a>
+        </div>
+        <div class="col-md-4 m-b-30">
+          <h5>Correo Personal</h5> <a href="mail:{{agenda.coper}}">{{agenda.coper}}</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 m-b-30">
+          <h5>Dia</h5> {{agenda.fcita}}
+        </div>
+        <div class="col-md-6 m-b-30">
+          <h5>Hora</h5> {{agenda.hcita}}
+        </div>
+      </div>
+      <div class="row">
+        <div [style.display]="(agenda.estatus == 'Cancelada') ? 'none' : 'block' " class="col-md-6 m-b-30">
+          <h5>Observaciones</h5>{{agenda.observacion}}
+        </div>
+        <div [style.display]="(agenda.estatus == 'Cancelada') ? 'block' : 'none' " class="col-md-6 m-b-30">
+          <h5>Observaciones de Cancelacion</h5> {{agenda.observacion}}
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+        Ventana</button>
+      <button type="button" [ngClass]="(agenda.estatus=='Cancelada')?'btn disabled btn-danger':'btn btn-danger'"
+        (click)="cancelarCita(cancelarModal, agenda)"><i class="feather icon-delete"></i>Cancelar Cita</button>
+      <button type="button" [ngClass]="(agenda.estatus=='Cancelada')?'btn disabled btn-info':'btn btn-info'"
+        (click)="actualizarCita(actualizarModal, agenda)"><i class="feather icon-edit"></i>Actualizar Cita</button>
+    </div>
+  </ng-template>
+
+  <ng-template #cancelarModal>
+    <div class="modal-header">
+      <h4 class="modal-title">Cancelar Cita</h4>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-3 m-b-30">
+          <label>Descripción de la Cancelación</label>
+          <input type="text" class="form-control" placeholder="Observaciones" name="observacion"
+            [(ngModel)]="cancelar.observacion">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+        Ventana</button>
+      <button type="button" class="btn btn-danger" (click)='guardarCancelacion()'><i
+          class="feather icon-delete"></i>Cancelar Cita</button>
+    </div>
+  </ng-template>
+
+  <ng-template #actualizarModal>
+    <div class="modal-header">
+      <h4 class="modal-title">Actualizar Cita</h4>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="form-group col-md-12">
+          <h5>Nombre Cliente</h5> {{agenda.nombre}} {{agenda.apaterno}} {{agenda.amaterno}}
+        </div>
+        <div class="form-group col-md-12">
+          <label>Estilista</label>
+          <ng-select [items]="personal" bindLabel="nombre" bindValue="idpersonal" (change)="obtenerDato($event, 'pers')"
+            [(ngModel)]="agenda.idpersonal">
+          </ng-select>
+        </div>
+        <div class="form-group col-md-4">
+          <label>Fecha a Agendar</label>
+          <input type="date" id="fcita" [(ngModel)]="agenda.fcita" class="form-control" placeholder="Fecha">
+        </div>
+        <div class="form-group col-md-4">
+          <label>Hora a Agendar</label>
+          <input type="time" id="hcita" [(ngModel)]="agenda.hcita" class="form-control" placeholder="Hora">
+        </div>
+        <div class="form-group col-md-4">
+          <label>Observaciones de la Cita</label>
+          <input type="text" class="form-control" placeholder="Escriba si se tiene una observación" name="observacion"
+            [(ngModel)]="agenda.observacion">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+        Ventana</button>
+      <button type="button" class="btn btn-info" (click)="guardarActualizacionCita()"><i
+          class="feather icon-edit"></i>Actualizar Cita</button>
+    </div>
+  </ng-template>

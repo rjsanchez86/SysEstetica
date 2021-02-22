@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Lista de Perfiles" cardClass="Application-list" blockClass="pb-0" [options]="false">
+      <div class="row">
+        <div class="col-md-6" style="text-align:left;">
+          <button type="button" class="btn btn-info" (click)="refrescarTabla()"><i
+              class="feather icon-refresh-cw"></i>Refrescar Tabla</button>
+        </div>
+        <div class="col-md-6" style="text-align:right;">
+          <button type="button" class="btn btn-primary" (click)="ver('new', '', PerfilModal)"><i
+              class="feather icon-edit-2"></i>Agregar Perfil</button>
+        </div>
+      </div>
+      <hr>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+          class="table table-striped row-border table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Perfil</th>
+              <th>Acciones </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let perfil of perfiles; let i = index">
+              <td>{{ i + 1}}</td>
+              <td>{{perfil.perfil}}</td>
+              <td>
+                <button type="button" class="btn btn-icon btn-outline-success" ngbTooltip="Actualizar Usuario"
+                  (click)="ver('update', perfil, PerfilModal)"><i class="feather icon-edit-1"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </app-card>
+  </div>
+</div>
+
+<ng-template #PerfilModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Datos del Perfil</h4>
+  </div>
+  <div class="modal-body" *ngIf="per">
+    <div class="row">
+      <div class="col-md-6 m-b-30">
+        <label>Perfil</label>
+        <input type="text" [(ngModel)]="per.perfil" name="perfil" class="form-control" [disabled]="per.perfil == 'ADMINISTRADOR' ? true : null" />
+      </div>
+    </div>
+    <hr>
+    <div class="col-md-12 m-b-30">
+      <label>Permisos</label>
+      <ng-select [(ngModel)]="PermisosId" [items]="permisos" bindLabel="pagina" bindValue="id" [selectableGroup]="true"
+          [multiple]="true"  (change)="obtenerDato($event, 'permis')">
+        </ng-select>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning" (click)="cerrar()"><i class="feather icon-x-square"></i>Cerrar
+      Ventana</button>
+      <button type="button" class="btn btn-primary" (click)="guardar()" *ngIf="status == 'update' || status == 'new'"><i
+        class="feather icon-save"></i>Guardar</button>
+  </div>
+</ng-template>
